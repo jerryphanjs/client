@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import { UserIsAuthenticated, UserIsNotAuthenticated } from './helpers/auth'; 
+
 import './App.css';
 import AppNavbar from './components/layout/AppNavbar';
 import DashBoard from './components/layout/DashBoard';
@@ -9,6 +11,7 @@ import store from './store';
 import { Provider } from 'react-redux';
 import EditClient from './components/client/EditClient';
 import Login from './components/auth/Login';
+import Settings from './components/settings/Settings';
 
 class App extends Component {
   render() {
@@ -19,11 +22,12 @@ class App extends Component {
               <AppNavbar />
               <div className="container">
                 <Switch>
-                  <Route exact path="/" component={DashBoard} />
-                  <Route exact path="/client/add" component={AddClient} />
-                  <Route exact path="/client/:id" component={ClientDetail} />
-                  <Route exact path="/client/edit/:id" component={EditClient} />
-                  <Route exact path="/login" component={Login} />
+                  <Route exact path="/" component={ UserIsAuthenticated(DashBoard)} />
+                  <Route exact path="/client/add" component={UserIsAuthenticated(AddClient)} />
+                  <Route exact path="/client/:id" component={UserIsAuthenticated(ClientDetail)} />
+                  <Route exact path="/client/edit/:id" component={UserIsAuthenticated(EditClient)} />
+                  <Route exact path="/login" component={UserIsNotAuthenticated(Login)} />
+                  <Route exact path="/settings" component={UserIsAuthenticated(Settings)} />
                 </Switch>
               </div>
             </div>
