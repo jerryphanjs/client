@@ -16,7 +16,6 @@ const firebaseConfig = {
   messagingSenderId: "429890900904"
 };
 
-//react-redux-firebase config
 const rrfConfig = {
   userProfile: 'users',
   useFirestoreForProfile: true
@@ -27,13 +26,11 @@ firebase.initializeApp(firebaseConfig);
 //Init firestore
 // const firestore = firebase.firestore();
 
-// Add reactReduxFirebase enhancer when making store creator
 const createStoreWithFirebase = compose(
   reactReduxFirebase(firebase, rrfConfig),
   reduxFirestore(firebase)
 )(createStore)
 
-// Add firebase to reducers
 const rootReducer = combineReducers({
   firebase: firebaseReducer,
   firestore: firestoreReducer,
@@ -41,8 +38,16 @@ const rootReducer = combineReducers({
   settings: settingsReducer
 });
 
-//Check for settings in localStore
-const initialState = {};
+if(localStorage.getItem('settings') == null) {
+  const defaultSettings = {
+    disableBalanceOnAdd: true,
+    disableBalanceOnEdit: false,
+    allowRegistration: false
+  }
+  localStorage.setItem('settings', JSON.stringify(defaultSettings));
+}
+
+const initialState = {settings: JSON.parse(localStorage.getItem('settings'))};
 
 const store = createStoreWithFirebase(rootReducer, initialState, compose(
   reactReduxFirebase(firebase),
